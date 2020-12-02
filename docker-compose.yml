@@ -4,6 +4,7 @@ services:
   backend:
     container_name: helpdesk.backend
     image: helpdesk.backend:dev
+    build: ./backend
     depends_on:
       - postgresql
     env_file:

@@ -1,0 +1,34 @@
+#!/bin/sh
+
+PATH=/app/bin:$PATH
+
+set -e
+
+cmd="$1"
+shift
+
+envsubst < /app/etc/env.in > /app/etc/.env
+alembic upgrade head &&
+
+case "$cmd" in
+    start)
+        exec uvicorn backend.main:app
+        ;;
+
+    wait)
+        sleep infinity
+        ;;
+
+    help)
+        echo Available commands:
+        echo
+        echo    start   - start API server
+        echo    help    - show this message
+        ;;
+
+    *)
+        echo Unknown command >&2
+        "$0" help >&2
+        exit 1
+        ;;
+esac
