@@ -25,6 +25,7 @@ services:
   frontend:
     container_name: helpdesk.frontend
     image: helpdesk.frontend:dev
+    build: ./frontend
     env_file:
       - ./config/hosts.env
     ports:

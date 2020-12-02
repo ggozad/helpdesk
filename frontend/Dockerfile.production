@@ -1,0 +1,29 @@
+FROM node:14.10.1-alpine
+
+# We need gettext to get the envsubst command
+RUN \
+    apk add --update gettext
+
+# set working directory
+WORKDIR /app
+
+# add `/app/node_modules/.bin` to $PATH
+ENV PATH /app/node_modules/.bin:$PATH
+
+# install app dependencies
+COPY package.json ./
+COPY yarn.lock ./
+COPY docker/config.js.in ./
+RUN yarn install
+RUN yarn global add serve
+
+# add app
+COPY . ./
+RUN yarn build
+
+# Copy runner
+COPY docker/runner /usr/bin/runner
+
+# start app
+ENTRYPOINT ["/usr/bin/runner"]
+CMD ["start"]
