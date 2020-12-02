@@ -1,0 +1,83 @@
+version: "3.8"
+
+services:
+  backend:
+    container_name: helpdesk.backend
+    image: helpdesk.backend:dev
+    depends_on:
+      - postgresql
+    env_file:
+      - ./config/hosts.env
+    environment:
+      POSTGRES_HOST: postgresql
+      POSTGRES_PORT: "5432"
+      POSTGRES_DATABASE: helpdesk
+      POSTGRES_USER: ${SQL_BACKEND_USER}
+      POSTGRES_PASSWORD: ${SQL_BACKEND_PASSWORD}
+    volumes:
+      - type: bind
+        source: ./data/vault
+        target: /var/vault
+    ports:
+      - "8000:8000"
+
+  frontend:
+    container_name: helpdesk.frontend
+    image: helpdesk.frontend:dev
+    env_file:
+      - ./config/hosts.env
+    ports:
+      - "3000:3000"
+    stdin_open: true
+
+  postgresql:
+    container_name: helpdesk.postgresql
+    image: postgres:13.1-alpine
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres", "-h", "localhost"]
+      start_period: 10s
+      interval: 1m
+      timeout: 5s
+    ports:
+      - "5432:5432"
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_DB: helpdesk
+      POSTGRES_USER: ${SQL_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${SQL_POSTGRES_PASSWORD}
+      BACKEND_USER: ${SQL_BACKEND_USER}
+      BACKEND_PASSWORD: ${SQL_BACKEND_PASSWORD}
+    volumes:
+      - type: bind
+        source: ./config/postgresql-init
+        target: /docker-entrypoint-initdb.d
+      - sql-data:/var/lib/postgresql/data
+
+  nginx:
+    image: nginx:1.19.2-alpine
+    container_name: helpdesk.nginx
+    depends_on:
+      - backend
+    env_file:
+      - ./config/hosts.env
+      - ./config/certs.env
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/templates/default.conf.template
+      - ./secrets/local.helpdesk.health.pem:/etc/nginx/cert/local.helpdesk.health.pem
+      - ./secrets/local.helpdesk.health-key.pem:/etc/nginx/cert/local.helpdesk.health-key.pem
+    ports:
+      - 8080:8080
+
+  pgadmin:
+    container_name: helpdesk.pgadmin
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@helpdesk.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgresql
+
+volumes:
+  sql-data:

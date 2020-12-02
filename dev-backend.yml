@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  backend:
+    entrypoint: ["echo", "Backend disabled"]
+  frontend:
+    entrypoint: ["echo", "Frontend disabled"]
+
+  nginx:
+    environment:
+      API_HOST_URL: http://host.docker.internal:8000/
+volumes:
+  sql-data:
