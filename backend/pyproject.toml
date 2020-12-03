@@ -13,6 +13,8 @@ alembic = "^1.4.3"
 asyncpg = "^0.21.0"
 databases = {version = "^0.4.0", extras = ["postgresql"]}
 fastapi_utils = "^0.2.1"
+fastapi-mail = "^0.3.0"
+psycopg2 = "^2.8.6"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

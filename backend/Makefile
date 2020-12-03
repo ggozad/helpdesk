@@ -1,5 +1,6 @@
 include ${PWD}/../.env
 include ${PWD}/etc/.env
+include ${PWD}/../config/mail.env
 export
 
 dev-image:
@@ -11,6 +12,8 @@ dev-config:
 	POSTGRES_DATABASE=helpdesk \
 	POSTGRES_USER=${SQL_BACKEND_USER} \
 	POSTGRES_PASSWORD=${SQL_BACKEND_PASSWORD} \
+	MAIL_HOSTNAME=mail.helpdesk.local.dev \
+	MAIL_PORT=mail.helpdesk.local.dev \
 	envsubst < ./etc/env.in > ./etc/.env
 
 init-dev: dev-config

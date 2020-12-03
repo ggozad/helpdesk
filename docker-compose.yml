@@ -9,6 +9,7 @@ services:
       - postgresql
     env_file:
       - ./config/hosts.env
+      - ./config/mail.env
     environment:
       POSTGRES_HOST: postgresql
       POSTGRES_PORT: "5432"
