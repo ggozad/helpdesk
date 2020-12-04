@@ -56,18 +56,13 @@ services:
         target: /docker-entrypoint-initdb.d
       - sql-data:/var/lib/postgresql/data
 
-  mocks:
-    container_name: helpdesk.mocks
-    image: helpdesk.mocks:dev
-    build: ./mocks
-    env_file:
-      - ./config/hosts.env
+  mailhog:
+    image: mailhog/mailhog
+    # logging:
+    #   driver: "none" # disable saving logs
     ports:
-      - "8081:8081"
-    volumes:
-      - type: bind
-        source: ./data/mail
-        target: /var/mail
+      - 1025:1025 # smtp server
+      - 8025:8025 # web ui
 
   nginx:
     image: nginx:1.19.2-alpine
