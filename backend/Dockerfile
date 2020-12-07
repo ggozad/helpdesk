@@ -22,7 +22,6 @@ VOLUME [ "/var/vault"]
 
 COPY poetry.lock pyproject.toml /app/
 COPY backend /app/backend/
-COPY etc/env.in /app/etc/
 WORKDIR /app
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-dev

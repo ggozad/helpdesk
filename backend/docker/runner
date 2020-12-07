@@ -7,7 +7,6 @@ set -e
 cmd="$1"
 shift
 
-envsubst < /app/etc/env.in > /app/etc/.env
 alembic upgrade head &&
 
 case "$cmd" in
