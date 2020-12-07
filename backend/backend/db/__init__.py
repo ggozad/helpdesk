@@ -1,8 +1,8 @@
 import os
-from databases import Database
-import sqlalchemy
+from sqlalchemy import MetaData
+from sqlalchemy.ext.asyncio import create_async_engine
 
-DATABASE_URL = "postgres://{}:{}@{}:{}/{}".format(
+DATABASE_URL = "postgresql+asyncpg://{}:{}@{}:{}/{}".format(
     os.environ["POSTGRES_USER"],
     os.environ["POSTGRES_PASSWORD"],
     os.environ["POSTGRES_HOST"],
@@ -10,5 +10,8 @@ DATABASE_URL = "postgres://{}:{}@{}:{}/{}".format(
     os.environ["POSTGRES_DATABASE"],
 )
 
-db = Database(DATABASE_URL)
-metadata = sqlalchemy.MetaData()
+metadata = MetaData()
+engine = create_async_engine(
+    DATABASE_URL,
+    echo=True,
+)

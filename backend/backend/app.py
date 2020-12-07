@@ -1,14 +1,13 @@
 from fastapi import FastAPI
-from backend.db import db
 
 app = FastAPI()
 
 
 @app.on_event("startup")
 async def startup():
-    await db.connect()
+    pass
 
 
 @app.on_event("shutdown")
 async def shutdown():
-    await db.disconnect()
+    pass
