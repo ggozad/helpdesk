@@ -39,12 +39,12 @@ sqlalchemy_url = "postgresql://{}:{}@{}:{}/helpdesk".format(
 config.set_main_option("sqlalchemy.url", sqlalchemy_url)
 
 # Import models
-from backend.db.models import agent
+from backend.db.models.agent import Agent, AgentRole
 
 # Set metadata
-from backend.db import metadata
+from backend.db import Base
 
-target_metadata = metadata
+target_metadata = Base.metadata
 
 # END OF ADDITIONAL CODE
 

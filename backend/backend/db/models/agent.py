@@ -1,11 +1,10 @@
-from sqlalchemy import Column, String
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, String, ForeignKey, PrimaryKeyConstraint
+from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 from pydantic import BaseModel
 from fastapi_utils.guid_type import GUID, GUID_SERVER_DEFAULT_POSTGRESQL
-
-
-Base = declarative_base()
+from typing import List
+from backend.db import Base
 
 
 class Agent(Base):
@@ -18,10 +17,20 @@ class Agent(Base):
         server_default=GUID_SERVER_DEFAULT_POSTGRESQL,
     )
     fullname = Column("fullname", String, nullable=False)
+    roles = relationship("AgentRole")
+
+
+class AgentRole(Base):
+    __tablename__ = "agent_roles"
+    __table_args__ = (PrimaryKeyConstraint("agent_id", "role"),)
+    agent_id = Column(ForeignKey("agents.id"))
+
+    role = Column("role", String, nullable=False)
 
 
 class AgentSchema(BaseModel):
     fullname: str
+    roles: List[str]
 
     class Config:
         orm_mode = True
