@@ -15,7 +15,7 @@ RUN \
     apt-get install --no-install-recommends -y gettext && \
     rm -r /var/cache/apt /var/lib/apt
 
-RUN pip install poetry==1.0.10
+RUN pip install poetry==1.1.4
 
 RUN mkdir -p /var/vault
 VOLUME [ "/var/vault"]
