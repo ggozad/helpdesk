@@ -11,7 +11,7 @@ POSTGRES_PASSWORD=${SQL_BACKEND_PASSWORD}
 dev-image:
 	docker build -t helpdesk.backend:dev .
 
-init-dev: dev-config
+init-dev:
 	python3 -m venv .venv
 	( \
 		source .venv/bin/activate; \
