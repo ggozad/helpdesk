@@ -16,6 +16,7 @@ services:
       POSTGRES_DATABASE: helpdesk
       POSTGRES_USER: ${SQL_BACKEND_USER}
       POSTGRES_PASSWORD: ${SQL_BACKEND_PASSWORD}
+      AUTH_SECRET: ${BACKEND_AUTH_SECRET}
     volumes:
       - type: bind
         source: ./data/vault

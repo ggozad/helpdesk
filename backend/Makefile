@@ -7,6 +7,7 @@ POSTGRES_PORT=5432
 POSTGRES_DATABASE=helpdesk
 POSTGRES_USER=${SQL_BACKEND_USER}
 POSTGRES_PASSWORD=${SQL_BACKEND_PASSWORD}
+AUTH_SECRET=${BACKEND_AUTH_SECRET}
 
 dev-image:
 	docker build -t helpdesk.backend:dev .
@@ -20,7 +21,7 @@ init-dev:
 	)
 dev:
 	alembic upgrade head
-	uvicorn backend.main:app
+	uvicorn backend.main:app --reload
 
 alembic-rev:
 	alembic revision --autogenerate -m "$(msg)"
