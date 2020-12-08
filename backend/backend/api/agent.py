@@ -1,6 +1,7 @@
+import pdb
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, joinedload
 
 from backend.app import app
 from backend.db import engine
@@ -24,10 +25,17 @@ async def create_agent(agent: AgentSchema):
 @app.get("/agents")
 async def get_agents():
     async with AsyncSession(engine) as session:
-        query = select(Agent).options(selectinload(Agent.roles))
+        query = select(Agent).options(joinedload(Agent.roles))
         result = await session.execute(query)
+        result = result.unique().scalars().all()
+
     agents = [
-        {"id": a.id, "fullname": a.fullname, "email": a.email, "roles": a.roles}
-        for a in result.scalars()
+        {
+            "id": a.id,
+            "fullname": a.fullname,
+            "email": a.email,
+            "roles": [r.role for r in a.roles],
+        }
+        for a in result
     ]
     return agents
