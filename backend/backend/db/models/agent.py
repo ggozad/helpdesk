@@ -1,3 +1,4 @@
+from pydantic.networks import EmailStr
 from sqlalchemy import Column, String, ForeignKey, PrimaryKeyConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
@@ -17,6 +18,7 @@ class Agent(Base):
         server_default=GUID_SERVER_DEFAULT_POSTGRESQL,
     )
     fullname = Column("fullname", String, nullable=False)
+    email = Column("email", String, nullable=False)
     roles = relationship("AgentRole")
 
 
@@ -31,6 +33,7 @@ class AgentRole(Base):
 class AgentSchema(BaseModel):
     fullname: str
     roles: List[str]
+    email: EmailStr
 
     class Config:
         orm_mode = True

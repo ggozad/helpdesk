@@ -626,7 +626,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "3cfb4dfdf762b4226f89f0a95031361029d0112f5d11f6cf25de6b4666c95d0b"
+content-hash = "198939fde5df5075c502e0de668de8b7732bb18586be91925aba452f84edb584"
 
 [metadata.files]
 aioredis = [

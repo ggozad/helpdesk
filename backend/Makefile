@@ -22,6 +22,6 @@ dev:
 	alembic upgrade head
 	uvicorn backend.main:app
 
-alembic-init:
-	alembic revision --autogenerate -m 'initial'
+alembic-rev:
+	alembic revision --autogenerate -m "$(msg)"
 

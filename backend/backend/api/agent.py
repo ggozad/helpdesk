@@ -12,7 +12,9 @@ async def create_agent(agent: AgentSchema):
     async with AsyncSession(engine) as session:
         async with session.begin():
             obj = Agent(
-                fullname=agent.fullname, roles=[AgentRole(role=r) for r in agent.roles]
+                fullname=agent.fullname,
+                email=agent.email,
+                roles=[AgentRole(role=r) for r in agent.roles],
             )
             session.add(obj)
         await session.refresh(obj)
@@ -25,6 +27,7 @@ async def get_agents():
         query = select(Agent).options(selectinload(Agent.roles))
         result = await session.execute(query)
     agents = [
-        {"id": a.id, "fullname": a.fullname, "roles": a.roles} for a in result.scalars()
+        {"id": a.id, "fullname": a.fullname, "email": a.email, "roles": a.roles}
+        for a in result.scalars()
     ]
     return agents
