@@ -1,13 +1,15 @@
+from fastapi_utils.guid_type import GUID, GUID_SERVER_DEFAULT_POSTGRESQL
+from enum import Enum
+from pydantic import BaseModel
 from pydantic.networks import EmailStr
 from sqlalchemy import Column, String, ForeignKey, PrimaryKeyConstraint
-from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
-from pydantic import BaseModel
-from fastapi_utils.guid_type import GUID, GUID_SERVER_DEFAULT_POSTGRESQL
+from sqlalchemy.orm import relationship
 from typing import List
+
 from backend.db import Base
 
-
+# Models
 class Agent(Base):
     __tablename__ = "agents"
 
@@ -30,9 +32,14 @@ class AgentRole(Base):
     role = Column("role", String, nullable=False)
 
 
+# Schemas
+class AgentRoleEnum(str, Enum):
+    admin = "admin"
+
+
 class AgentSchema(BaseModel):
     fullname: str
-    roles: List[str]
+    roles: List[AgentRoleEnum]
     email: EmailStr
 
     class Config:

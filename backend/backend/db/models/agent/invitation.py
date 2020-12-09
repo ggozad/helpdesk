@@ -1,11 +1,11 @@
-from enum import unique
+from pydantic import BaseModel
 from pydantic.networks import EmailStr
 from sqlalchemy import Column, String
 from sqlalchemy.dialects.postgresql import UUID
-from pydantic import BaseModel
-from fastapi_utils.guid_type import GUID, GUID_SERVER_DEFAULT_POSTGRESQL
-from backend.db import Base
 from typing import Optional
+
+from backend.db import Base
+from .agent import AgentRoleEnum
 
 
 class AgentInvitation(Base):
@@ -18,7 +18,7 @@ class AgentInvitation(Base):
 
 class AgentInvitationSchema(BaseModel):
     email: EmailStr
-    role: Optional[str]
+    role: Optional[AgentRoleEnum]
 
     class Config:
         orm_mode = True
