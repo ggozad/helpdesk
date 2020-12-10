@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import os
 from typing import Mapping
-from jose import JWTError, jwt
+from jose import jwt
 
 
 SECRET = os.environ.get("AUTH_SECRET")

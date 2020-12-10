@@ -2,10 +2,12 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+SITE_URL = os.environ.get("SITE_URL")
+
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[os.environ.get("SITE_URL")],
+    allow_origins=[SITE_URL],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

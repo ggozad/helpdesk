@@ -1,14 +1,16 @@
-from backend.db.models.agent.invitation import AgentInvitation
 from datetime import timedelta
+from fastapi import HTTPException
 from fastapi_mail import MessageSchema
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import joinedload
+from jose import JWTError, ExpiredSignatureError
 
-from backend.app import app
+from backend.app import app, SITE_URL
 from backend.db import engine
-from backend.db.models.agent import Agent, AgentRole, AgentSchema, AgentInvitationSchema
-from backend.crypto import tokenize
+from backend.db.models.agent import Agent, AgentRole, AgentSchema
+from backend.db.models.agent.invitation import AgentInvitation, AgentInvitationSchema
+from backend.crypto import detokenize, tokenize
 from backend.utils.mail import get_mailer
 
 
@@ -61,16 +63,32 @@ async def invite_agent(invitation: AgentInvitationSchema):
             )
             await session.merge(obj)
 
+    invitation_url = "{}/agent/register/{}".format(SITE_URL, token)
     message = MessageSchema(
         subject="Fastapi-Mail module",
         recipients=[invitation.email],
         body="""
             <p>You have been invited. Token: {}</p>
         """.format(
-            token
+            invitation_url
         ),
         subtype="html",
     )
     mailer = get_mailer()
     await mailer.send_message(message)
     return {}
+
+
+@app.get("/agent/invitation/{token}")
+async def invite_agent(token: str):
+    """
+    Validates an invitation token and returns the data we have (email) for that invitation.
+    """
+
+    try:
+        data = detokenize(token)
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=410, detail="Token expired")
+    except JWTError:
+        raise HTTPException(status_code=400, detail="Cannot decode token")
+    return {"email": data["email"]}
