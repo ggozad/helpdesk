@@ -1,1 +1,1 @@
-window.API_HOSTNAME = "${API_HOSTNAME}"
+window.API_HOSTNAME = "${API_URL}"
