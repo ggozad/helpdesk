@@ -1,8 +1,10 @@
 from datetime import timedelta
+import pdb
 from fastapi import HTTPException
 from fastapi_mail import MessageSchema
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.sql import exists
 from sqlalchemy.orm import joinedload
 from jose import JWTError, ExpiredSignatureError
 
@@ -87,6 +89,15 @@ async def invite_agent(token: str):
 
     try:
         data = detokenize(token)
+        async with AsyncSession(engine) as session:
+            query = select(AgentInvitation).where(
+                AgentInvitation.email == data.get("email")
+            )
+
+            result = await session.execute(query)
+            result = result.scalars().one_or_none()
+            if result is None:
+                raise HTTPException(status_code=404, detail="Invitation not found")
     except ExpiredSignatureError:
         raise HTTPException(status_code=410, detail="Token expired")
     except JWTError:
